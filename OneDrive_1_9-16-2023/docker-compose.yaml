@@ -1,0 +1,46 @@
+version: "3"
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      MYSQL_DATABASE: my-db
+    restart: always
+    volumes:
+    - "appdb:/var/lib/mysql"
+
+  backend:
+    build:
+      context: laravel\blue-internal-back-master\
+      dockerfile: dockerfile
+    stdin_open: true 
+    tty: true
+    volumes:
+    - "backend_dp:/app"  
+    networks:
+    - my_net
+    depends_on:
+    - db
+  frontend:
+    build:
+      context: nextjs\intranet-front-main\
+      dockerfile: dockerfile
+    ports:
+      - "3000:3000"
+    volumes:  
+    - frontend_dp:/app
+    networks:
+    - my_net
+    command: bash -c "npm install && npm run dev"
+
+networks:
+  my_net:
+    driver: bridge
+
+volumes:
+  appdb:
+    driver: local
+  backend_dp:
+    driver: local
+  frontend_dp:
+    driver: local         

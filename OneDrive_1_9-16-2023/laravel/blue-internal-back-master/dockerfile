@@ -1,0 +1,13 @@
+FROM php
+
+WORKDIR /app
+
+COPY . .
+
+RUN cat .env.example > .env
+
+EXPOSE 8000
+
+
+
+
